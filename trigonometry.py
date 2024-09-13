@@ -50,6 +50,6 @@ class homework_one:
         plt.show()
     
     def write_file(self):
-        ascii.write([self.x,[self.y_values[func] for func in self.y_values]], self.write, names=['x',f'{func}(x)' for func in self.y_values])
+        ascii.write([self.x,[self.y_values[func] for func in self.y_values]], self.write, names=['x',(f'{func}(x)' for func in self.y_values)])
         print(f'Data written to {self.write}')
     
