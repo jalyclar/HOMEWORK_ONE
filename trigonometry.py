@@ -8,7 +8,6 @@ import pandas as pd
 class homework_one:
 
     def __innit__(self):
-         
         self.function=None 
         self.filename=None
         self.read_from_file=None 
@@ -19,8 +18,8 @@ class homework_one:
         self.y_values=None #make this a dict 
         self.y_list=None #make this an empty list maybe?
         
-    def parse_arguments(self): #Parsing over command line arguments 
-        for argument in sys.argv[1:]:
+    def parse_argv(self): #Parsing over command line arguments 
+        for argument in sys.argv[1:]: #Skips over 1st argument (script name)
             if argument.startswith("--function="): #Assigns after = 
                 self.function=argument.split("=")[1]
             if argument.startswith("--write="):
@@ -30,9 +29,8 @@ class homework_one:
             if argument.startswith("--print="):
                 self.print=argument.split("=")[1]
  
-    def plot_func(self):
-
-        if self.function is None:
+    def plot_func(self): #Plotting data from function(s) provided  
+        if self.function is None: #Does nothing if function is not provided 
             print('No function understood.')
 
         self.x=np.arange(-10,10,0.05)
@@ -47,10 +45,12 @@ class homework_one:
             elif func == "sinc":
                 y=np.sinc(self.x)
             else:
+                #!!!DEBUG!!! ---> This should not allow any more functions to be run if a valid func isnt provided 
                 print(f"Function {func} is not understood.")
                 continue #Skips over bad inputs 
-            self.y_values[func]=y #stores y values and corresponding func in dict 
-            plt.plot(self.x,y,label=func)
+            self.y_values[func]=y #stores y values and corresponding func in dict
+            label=f'{func}(x)' 
+            plt.plot(self.x,y,label=label)
 
         plt.title(f"Plot of {' , '.join([f'{f}(x)' for f in functions])}")
         plt.xlabel("x values")
@@ -89,8 +89,8 @@ class homework_one:
             print(data)
 
 if __name__ == "__main__": #Allows script to be ran within command line 
-    data=homework_one()
-    data.parse_arguments()
+    data=homework_one() #Calls all functions from within the class for command line 
+    data.parse_argv()
     data.plot_func()
     data.write_file()
     data.plot_from_file()
