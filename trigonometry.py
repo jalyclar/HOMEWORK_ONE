@@ -1,3 +1,5 @@
+#!/opt/anaconda3/bin/python
+
 import sys 
 import numpy as np
 import matplotlib.pyplot as plt 
@@ -5,26 +7,40 @@ from astropy.io import ascii
 import os 
 import pandas as pd
 
-#THINGS TO DEBGUG #####################################################################
-#                                    NOTHING !
-#######################################################################################
+
+#                 TO DO:   Change dpi in generate_plot, Create MakeFile ,Document class and functions 
 
 
 class homework_one:
+    """
+    Parameters:
+    ------------
+    
+    Attributes:
+    ------------
+
+    Methods:
+    ------------
+
+    """
 
     def __init__(self):
         self.function=None 
         self.filename=None
         self.read_from_file=None 
         self.print=None
-
-        #Initialize certain things here instead of inside each function
-        self.x=None #put np.arange here 
-        self.y_values=None #make this a dict 
-        self.y_list=None #make this an empty list maybe?
+        self.x=np.arange(-10,10,0.05)
+        self.y_values={} 
         self.table_df=pd.DataFrame
         
-    def parse_argv(self): #Parsing over command line arguments 
+    def parse_argv(self): #Parsing over command line arguments
+        """
+        Parameters:
+        ------------
+
+        Returns:
+        ------------
+        """
         for argument in sys.argv[1:]: #Skips over 1st argument (script name)
             if argument.startswith("--function="): #Assigns after = 
                 self.function=argument.split("=")[1]
@@ -35,13 +51,17 @@ class homework_one:
             if argument.startswith("--print="):
                 self.print=argument.split("=")[1]
  
-    def plot_func(self): #Plotting data from function(s) provided  
-        if self.function==None: #Does nothing if function is not provided 
-            print('Error: A function argument needs to be provided.')
-            quit()
+    def plot_func(self): #Plotting data from function(s) provided
+        """
+        Parameters:
+        ------------
 
-        self.x=np.arange(-10,10,0.05)
-        self.y_values={}
+        Returns:
+        ------------
+        """  
+        if self.function==None:  
+            print('Error: A function argument needs to be provided.')
+            quit() #exits out script 
     
         functions=self.function.split(",") #Seperates multiples func if given 
         for func in functions:
@@ -58,61 +78,77 @@ class homework_one:
             label=f'{func}(x)' 
             plt.plot(self.x,y,label=label)
 
-        plt.title(f"Plot of {' , '.join([f'{f}(x)' for f in functions])}")
+        plt.title(f"Plot of {', '.join([f'{f}(x)' for f in functions])}")
         plt.xlabel("x values")
-        plt.ylabel(f"{' , '.join([f'{f}(x)' for f in functions])}")
+        plt.ylabel(f"{', '.join([f'{f}(x)' for f in functions])}")
         plt.legend()
         plt.show()
     
-    def write_file(self): 
+    def write_file(self):
+        """
+        Parameters:
+        ------------
+
+        Returns:
+        ------------
+        """ 
         if self.filename==None:
-            pass #write_file does nothing if no argument is given 
+            pass #Does nothing if no argument is given 
         else:
             if self.y_values is None:
                 print("Error: No y values to put in table.") #If self.y_values werent passed correctly 
-            data=[self.x] + [self.y_values[func].tolist() for func in self.y_values] #write function only takes lists or np.array
-            names=['x']+ [f'{func}(x)' for func in self.y_values] 
+            data=[self.x] + [self.y_values[func].tolist() for func in self.y_values] #___.write only takes lists or np.array as argument
+            names=['x']+ [f'{func}(x)' for func in self.y_values] #list of headers 
             
-            dir=os.path.dirname(os.getcwd()) #Stores in the parent directory outside the repository may not be neccessary
+            dir=os.path.dirname(os.getcwd()) #Stores in the directory above the local repository clone
             file_path=os.path.join(dir,self.filename)
 
             ascii.write(data, file_path, names=names, overwrite=True) #Allows file to be overwritten 
             print(f'Data written to {file_path}')
 
-    def read_file(self): #Reads and stores data from file 
+    def read_file(self):
+        """
+        Parameters:
+        ------------
+
+        Returns:
+        ------------
+        """ 
         if self.read_from_file==None:
-            pass #plot_from_file does nothing if no argument is given
+            pass #Does nothing if no argument is given
         else:
-            dir=os.path.dirname(os.getcwd()) #Reads from outside the repository but may not be needed 
+            dir=os.path.dirname(os.getcwd()) #Reads from directory above the local repository clone
             file_path=os.path.join(dir,self.read_from_file)
-            
-            #print(dir)
-            #print(self.read_from_file)
-            #print(file_path)
             self.table_df=pd.read_csv(file_path,delimiter=' ')
-            print(self.table_df)
+            print(self.table_df) #Comment out for final commit
 
     def generate_plot(self):
-        if self.print==None: #function does nothing if no argument is supplied 
+        """
+        Parameters:
+        ------------
+
+        Returns:
+        ------------
+        """
+        if self.print==None: #Does nothing if no argument is supplied 
             pass
         else:
             x=self.table_df.iloc[:,0] #x values assigned as first column in df
             for col in self.table_df.columns[1:]: 
                 y=self.table_df[col] #y values assigned as each column after first 
                 plt.plot(x,y,label=col)
-            plt.title(f"Plot of {' , '.join([f'{col}' for col in self.table_df.columns[1:]])}") 
+            plt.title(f"Plot of {', '.join([f'{col}' for col in self.table_df.columns[1:]])}") 
             plt.xlabel("x values")
-            plt.ylabel(f"{' , '.join([f'{col}' for col in self.table_df.columns[1:]])}")
+            plt.ylabel(f"{', '.join([f'{col}' for col in self.table_df.columns[1:]])}")
             plt.legend()
-            plt.show() #Comment out for final commit  
 
-            format=self.print.split(",") #Splits provided arguments if provided multiple 
-            dir=os.path.dirname(os.getcwd()) #Will save file to directory above this one (outside repository)
-            name='exampleplot.' #Name given to file that will have the plot(s) 
+            format=self.print.split(",") #Splits provided arguments if multiple 
+            dir=os.path.dirname(os.getcwd()) #Gets dir path of directory above the local repsoitroy clone 
+            name='exampleplot.' #Name given to file(s) that will have a plot
             for option in format:
                 if option=='jpeg':
                     full=''.join([name,option])#joins together filename and format provided 
-                    plt.savefig(os.path.join(dir,full))
+                    plt.savefig(os.path.join(dir,full)) #Saves figure to the directory above the local repsotiory clone 
                 elif option=='eps':
                     full=''.join([name,option])
                     plt.savefig(os.path.join(dir,full))
@@ -121,13 +157,12 @@ class homework_one:
                     plt.savefig(os.path.join(dir,full))
                 else:
                     print(f'Error: {option} not understood')
-                    continue
+                    continue #Keeps going through provided arguments (if multiple)
             print(f"Plots saved as 'exampleplot' in the following formats: {[option for option in format]}") #Lists all the formats its saved as
-                #print(full)
-            #plt.show()
+            plt.show() #comment out for final commit 
 
-if __name__ == "__main__": #Allows script to be ran within command line 
-    data=homework_one() #Calls all functions from within the class for command line 
+if __name__ == "__main__": #To run as script  
+    data=homework_one() #To call each function within the class  
     data.parse_argv()
     data.plot_func()
     data.write_file()
