@@ -1,17 +1,24 @@
 #phony targets 
 .PHONY: run plot write read
 
-#flags which correspond to arguments 
+#flags which correspond to command line arguments 
 SCRIPT=./trigonometry.py
 FXN ?=
 TXT=filename.txt
 FMT ?=
- 
-run: plot write read
 
+#Only plots provided function 
 plot:
 	$(SCRIPT) --function=$(FXN)
+
+#Plots and writes to a file  
 write:
-	$(SCRIPT) --filename=$(TXT) 
+	$(SCRIPT) --function=$(FXN) --write=$(TXT)
+
+#Plots, writes to a file, and reads the file to produce a plot 
 read: 
-	$(SCRIPT) --read_from_file=$(TXT) --print=$(FMT)  
+	$(SCRIPT) --function=$(FXN) --write=$(TXT) --read_from_file=$(TXT)
+
+#Does all the functions from the script  
+run:
+	$(SCRIPT) --function=$(FXN) --write=$(TXT) --read_from_file=$(TXT) --print=$(FMT)
