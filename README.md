@@ -17,6 +17,3 @@ Python file does following tasks:
 3. Takes an optional argument --read from file=filename.txt that reads in the ASCII file and produces the corresponding plot. Note that this program  should rely on the table from the file and not attempt to reproduce the data on-the-fly.
 
 4. Takes an optional input --print=jpeg,eps,pdf that produces the plot in the corresponding format(s).
-
-Makefile -----------------------
-
