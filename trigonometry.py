@@ -173,7 +173,6 @@ class homework_one:
             ax.set_ylabel(f"{', '.join([f'{col}' for col in self.table_df.columns[1:]])}")
             ax.legend()
             plt.show()
-            print(type(f))
             return f
 
     def generate_plot(self,f):
